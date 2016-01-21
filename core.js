@@ -90,7 +90,11 @@ function extractInfo(div, url, responseText) {
     div.className = 'rateBox';
     var page = document.createElement('div');
     page.innerHTML = responseText;
-
+    console.log(page.getElementsByClassName('pfname'));
+    if (page.getElementsByClassName('pfname').length === 0) {
+        div.appendChild(createDiv("title", 'No ratings yet ): Be the first! <a href="' + url + '" target="_blank"> Click here!</a>', []))
+        return false;
+    }
     var name = page.getElementsByClassName('pfname')[0].innerText + ' ' + page.getElementsByClassName('plname')[0].innerText;
     var link = document.createElement('a');
     link.href = url;

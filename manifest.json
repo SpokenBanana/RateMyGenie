@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "RateMyGenie",
   "description": "This extension will show you the RateMyProfessor's rating on the UNCG Genie page",
-  "version": "1.1",
+  "version": "1.2",
   "author": "David Santana",
   "page_action": {
     "default_icon": "icon.png"

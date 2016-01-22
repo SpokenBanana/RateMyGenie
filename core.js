@@ -24,7 +24,7 @@ function getRating() {
 function loadProfessorData(div) {
     div.innerHTML = '<input class="showRating" type="button" value="loading.."/>';
     chrome.runtime.sendMessage({url: div.url}, function(responseText) {
-        responseText = responseText.replace('http://blog.ratemyprofessors.com/wp-content/uploads/2015/01/WNOs6.5_RMP_72x72.jpg', '');
+        responseText = responseText.replace('https://blog.ratemyprofessors.com/wp-content/uploads/2015/01/WNOs6.5_RMP_72x72.jpg', '');
         var success = getProfessorData(div, responseText);
         if (!success){
             // try a different variation of their name?
@@ -33,7 +33,7 @@ function loadProfessorData(div) {
                 var name = splitNames[0] + '+' + splitNames[1];
                 var url = 'http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+north+carolina+at+greensboro&queryoption=HEADER&query=' + name + '&facetSearch=true';
                 chrome.runtime.sendMessage({url: url}, function(response) {
-                    response= response.replace('http://blog.ratemyprofessors.com/wp-content/uploads/2015/01/WNOs6.5_RMP_72x72.jpg', '');
+                    response= response.replace('https://blog.ratemyprofessors.com/wp-content/uploads/2015/01/WNOs6.5_RMP_72x72.jpg', '');
                     if (!getProfessorData(div, response)) {
                         // professor does not have a ratemyprofessor profile
                         div.innerHTML = 'Not found ):';
@@ -61,7 +61,7 @@ function getProfessorData(div, responseText) {
         var professorURL= 'http://www.ratemyprofessors.com/' + link;
 
         chrome.runtime.sendMessage({url: professorURL}, function(response){
-            response= response.replace('http://blog.ratemyprofessors.com/wp-content/uploads/2015/01/WNOs6.5_RMP_72x72.jpg', '');
+            response= response.replace('https://blog.ratemyprofessors.com/wp-content/uploads/2015/01/WNOs6.5_RMP_72x72.jpg', '');
             response = response.replace('/assets/chilis/warm-chili.png', '');
             response = response.replace('/assets/chilis/cold-chili.png', '');
             createRateBox(response, div, professorURL);
@@ -90,7 +90,6 @@ function extractInfo(div, url, responseText) {
     div.className = 'rateBox';
     var page = document.createElement('div');
     page.innerHTML = responseText;
-    console.log(page.getElementsByClassName('pfname'));
     if (page.getElementsByClassName('pfname').length === 0) {
         div.appendChild(createDiv("title", 'No ratings yet ): Be the first! <a href="' + url + '" target="_blank"> Click here!</a>', []))
         return false;

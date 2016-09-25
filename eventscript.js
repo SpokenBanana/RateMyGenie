@@ -1,4 +1,5 @@
 function showPage(id, info, tab) {
+    console.log("hello");
     if (tab.url === "https://banweb.uncg.edu/prod/bwskfcls.P_GetCrse" || tab.url === "https://ssb.uncg.edu/prod/bwskfcls.P_GetCrse") {
         chrome.pageAction.show(id);
     }

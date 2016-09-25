@@ -1,10 +1,10 @@
 .rateBox {
     background-color: #FFFFFF;
     font-family: sans-serif;
-    width: 300px;
+    width: 350px;
     text-align: center;
     padding: 0;
-    border: 1px solid gray;
+    border: 1px solid #878787;
 }
 
 .rateButton {
@@ -12,8 +12,10 @@
 
 .showRating {
     font-family: sans-serif;
-    border-radius: 5px;
-    background-color: dodgerblue;
+    border-radius: 2px;
+    border: none;
+    padding: 4px;
+    background-color: #126f99;
     color: white;
 }
 
@@ -59,6 +61,20 @@
     text-align: center;
     padding: 3px;
     color: #003366;
+}
+
+.tags {
+    width: 290px
+}
+
+.tag {
+    background-color: #d0fbfc;
+    font-size: .8em;
+    font-weight: bold;
+    margin: 2px;
+    border: 1px solid #83e0f2;
+    padding: 4px;
+    display: inline-block;
 }
 
 .hide {

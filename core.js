@@ -1,7 +1,7 @@
 function getRating() {
     // data hasn't been loaded yet
     if (this.rateInfo === undefined) {
-        this.innerHTML = '<input class="showRating" type="button" value="Hide Rating <<<"/>';
+        this.innerHTML = '<input class="showRating" type="button" value="Hide Rating"/>';
         this.show = false;
         // load the data from ratemyprofessor
         loadProfessorData(this);
@@ -9,13 +9,13 @@ function getRating() {
     // show data again
     else if (this.show) {
         this.rateInfo.className = this.rateInfo.className.substr(0, this.rateInfo.className.lastIndexOf(' '));
-        this.innerHTML = '<input class="showRating" type="button" value="Hide Rating <<<"/>';
+        this.innerHTML = '<input class="showRating" type="button" value="Hide Rating"/>';
         this.show = false;
     }
     // hide data
     else {
         this.rateInfo.className += ' hide';
-        this.innerHTML = '<input class="showRating" type="button" value="Show Rating!"/>';
+        this.innerHTML = '<input class="showRating" type="button" value="Show Rating"/>';
         this.show = true;
     }
 
@@ -91,7 +91,7 @@ function extractInfo(div, url, responseText) {
     var page = document.createElement('div');
     page.innerHTML = responseText;
     if (page.getElementsByClassName('pfname').length === 0) {
-        div.appendChild(createDiv("title", 'No ratings yet ): Be the first! <a href="' + url + '" target="_blank"> Click here!</a>', []))
+        div.appendChild(createDiv("title", 'No ratings yet ): Be the first! <a href="' + url + '" target="_blank"> Click here!</a>', []));
         return false;
     }
     var name = page.getElementsByClassName('pfname')[0].innerText + ' ' + page.getElementsByClassName('plname')[0].innerText;
@@ -103,13 +103,19 @@ function extractInfo(div, url, responseText) {
     var count   = page.getElementsByClassName('rating-count')[0].innerText;
     var grades  = page.getElementsByClassName('grade');
     var ratings = page.getElementsByClassName('rating');
+    var tags = page.getElementsByClassName('tag-box-choosetags');
 
     div.appendChild(createDiv('name', '', [link, createDiv('sub', count, [])]));
     div.appendChild(createDiv('title', 'Overall Rating', [createDiv(rankColor(grades[0].innerText), grades[0].innerText, [])]));
-    div.appendChild(createDiv('title', 'Average Grade',  [createDiv(rankColor(grades[1].innerText), grades[1].innerText, [])]));
-    div.appendChild(createDiv('title', 'Helpfulness',    [createDiv(rankColor(ratings[0].innerText), ratings[0].innerText, [])]));
-    div.appendChild(createDiv('title', 'Clarity',        [createDiv(rankColor(ratings[1].innerText), ratings[1].innerText, [])]));
-    div.appendChild(createDiv('title', 'Easiness',       [createDiv(rankColor(ratings[2].innerText), ratings[2].innerText, [])]));
+    div.appendChild(createDiv('title', 'Take Again?',  [createDiv(rankColor(grades[1].innerText), grades[1].innerText, [])]));
+    div.appendChild(createDiv('title', 'Difficulty',    [createDiv(rankColor(5-parseInt(grades[2].innerText)), grades[2].innerText, [])]));
+    var tagBox = createDiv('title tags', 'Top tags', []);
+    div.appendChild(tagBox);
+    for (var i = 0; i < Math.min(3, tags.length); i++) {
+        var tagItem = createDiv('tag', '', []);
+        tagItem.innerText = tags[i].innerText;
+        tagBox.appendChild(tagItem);
+    }
 }
 
 
@@ -127,7 +133,7 @@ function rankColor(rank) {
     rank = parseInt(rank);
     if (rank > 3.9)
         return 'good';
-    else if (rank >2.9)
+    else if (rank >2.5)
         return 'okay';
     return 'bad';
 }
@@ -142,7 +148,7 @@ function createRateBox(response, div, professorURL) {
     div.rateInfo = rate;
 
     extractInfo(rate, professorURL, response);
-    div.innerHTML = '<input class="showRating" type="button" value="Hide Rating <<<"/>';
+    div.innerHTML = '<input class="showRating" type="button" value="Hide Rating"/>';
 }
 
 
@@ -172,7 +178,7 @@ if (tables.length === 1) {
 
         var div = document.createElement('div');
         div.show = true;
-        div.innerHTML = '<input class="showRating" type="button" value="Show Rating!"/>';
+        div.innerHTML = '<input class="showRating" type="button" value="Show Rating"/>';
         div.profName = fullName;
         div.className = 'rateButton';
         div.url = url;

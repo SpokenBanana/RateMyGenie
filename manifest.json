@@ -17,7 +17,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://banweb.uncg.edu/prod/bwskfcls.P_GetCrse", "https://ssb.uncg.edu/prod/bwskfcls.P_GetCrse"],
+      "matches": [
+        "https://ssb.uncg.edu/prod/*.P_GetCrse",
+        "https://banweb.uncg.edu/prod/*.P_GetCrse",
+        "https://banweb.uncg.edu/prod/*.P_RegsGetCrse"],
       "css" : ["main.css"],
       "js": ["core.js"]
     }

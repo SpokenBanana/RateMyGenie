@@ -20,9 +20,17 @@
       "matches": [
         "https://ssb.uncg.edu/prod/*.P_GetCrse",
         "https://banweb.uncg.edu/prod/*.P_GetCrse",
-        "https://banweb.uncg.edu/prod/*.P_RegsGetCrse"],
+        "https://banweb.uncg.edu/prod/*.P_RegsGetCrse"
+      ],
       "css" : ["main.css"],
       "js": ["core.js"]
+    },
+    {
+      "matches": [
+        "https://banweb.uncg.edu/prod/hwzkcoff.P_UncgSrchCrsOff"
+      ],
+      "js": ["core.js"],
+      "css": ["lookup.css", "main.css"]
     }
   ]
 }

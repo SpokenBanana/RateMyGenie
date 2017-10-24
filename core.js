@@ -106,9 +106,19 @@ function extractInfo(div, url, responseText) {
     var tags = page.getElementsByClassName('tag-box-choosetags');
 
     div.appendChild(createDiv('name', '', [link, createDiv('sub', count, [])]));
-    div.appendChild(createDiv('title', 'Overall Rating', [createDiv(rankColor(grades[0].innerText), grades[0].innerText, [])]));
-    div.appendChild(createDiv('title', 'Take Again?',  [createDiv(rankColor(grades[1].innerText), grades[1].innerText, [])]));
-    div.appendChild(createDiv('title', 'Difficulty',    [createDiv(rankColor(5-parseInt(grades[2].innerText)), grades[2].innerText, [])]));
+    div.appendChild(
+      createDiv('title', 'Overall Rating',
+                [createDiv(rankColor('rating', grades[0].innerText),
+                           grades[0].innerText, [])]));
+    div.appendChild(
+      createDiv('title', 'Take Again?',
+                [createDiv(rankColor('Take', grades[1].innerText),
+                           grades[1].innerText, [])]));
+    div.appendChild(
+      createDiv('title', 'Difficulty',
+                [createDiv(rankColor('difficulty', 5-parseInt(grades[2].innerText)),
+                           grades[2].innerText, [])]));
+
     var tagBox = createDiv('title tags', 'Top tags', []);
     div.appendChild(tagBox);
     for (var i = 0; i < Math.min(3, tags.length); i++) {
@@ -119,23 +129,22 @@ function extractInfo(div, url, responseText) {
 }
 
 
-function rankColor(rank) {
-    // give color to the letter grade rating
-    if (isNaN(rank)) {
-        var letter = rank.substr(0,1);
-        if (letter === 'A' || letter === 'B')
-            return 'good';
-        else if (letter === 'C')
-            return 'okay';
-        return 'bad';
-    }
-
+function rankColor(kind, rank) {
+  if (kind === 'rating' || kind === 'difficulty') {
     rank = parseInt(rank);
-    if (rank > 3.9)
+    if (rank >= 3.0)
         return 'good';
-    else if (rank >2.5)
+    else if (rank >= 2.5)
         return 'okay';
     return 'bad';
+  } else if (kind === 'Take') {
+    rank = parseInt(rank.substr(0, rank.length-2));
+    if (rank >= 90) return 'good';
+    else if (rank >= 80) return 'okay';
+    return 'bad';
+  }
+
+
 }
 
 
@@ -152,37 +161,67 @@ function createRateBox(response, div, professorURL) {
 }
 
 
-// the page has two states, the state we are looking for only has one table that displays the courses
-var tables = document.getElementsByClassName('datadisplaytable');
-if (tables.length === 1) {
-    var table = tables[0];
-    var courses = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+// ENTRY POINT
 
-    for (var i = 2; i < courses.length; i++) {
-        // the 19th element has the professor's name
-        var text = courses[i].children[19].innerText;
-        if (text === "TBA")
-            continue;
+// Check if we are at the look up page or UNC Genie.
+if (window.location.href.endsWith("P_UncgSrchCrsOff")) {
+  let table = document.getElementsByTagName('table')[0];
+  let courses = table.getElementsByTagName('tr');
+  console.log(courses);
+  for (let i = 2; i < courses.length; i++) {
+    var nameText = courses[i].children[6].innerText.trim();
+    if (nameText === "") continue;
+    // Split until To
+    let names = nameText.split(' ')
+    let name;
+    if (names.length > 2)
+        name = names[0] + '+' + names[2];
+    else
+        name = nameText.replace(' ', '+');
 
-        // all of them have some sort of (P) tag on them, so remove it
-        var name = text.substr(0, text.indexOf(' ('));
-        var fullName = name;
-        var names = name.split(' ');
+    var url = 'http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+north+carolina+at+greensboro&queryoption=HEADER&query=' + name + '&facetSearch=true';
+    let div = document.createElement('div');
+    div.show = true;
+    div.innerHTML = '<input class="showRating" type="button" value="Show Rating"/>';
+    div.profName = nameText;
+    div.className = 'rateButton';
+    div.url = url;
+    div.addEventListener("click", getRating);
+    courses[i].children[6].appendChild(div);
+  }
+} else {
+  // The page has two states, the state we are looking for only has one table that displays the courses.
+  var tables = document.getElementsByClassName('datadisplaytable');
+  if (tables.length === 1) {
+      var table = tables[0];
+      var courses = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
-        if (names.length > 2)
-            name = names[0] + '+' + names[2];
-        else
-            name = name.replace(' ', '+');
+      for (var i = 2; i < courses.length; i++) {
+          // the 19th element has the professor's name
+          var text = courses[i].children[19].innerText;
+          if (text === "TBA")
+              continue;
 
-        var url = 'http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+north+carolina+at+greensboro&queryoption=HEADER&query=' + name + '&facetSearch=true';
+          // all of them have some sort of (P) tag on them, so remove it
+          var name = text.substr(0, text.indexOf(' ('));
+          var fullName = name;
+          var names = name.split(' ');
 
-        var div = document.createElement('div');
-        div.show = true;
-        div.innerHTML = '<input class="showRating" type="button" value="Show Rating"/>';
-        div.profName = fullName;
-        div.className = 'rateButton';
-        div.url = url;
-        div.addEventListener("click", getRating);
-        courses[i].children[19].appendChild(div);
-    }
+          if (names.length > 2)
+              name = names[0] + '+' + names[2];
+          else
+              name = name.replace(' ', '+');
+
+          var url = 'http://www.ratemyprofessors.com/search.jsp?queryBy=teacherName&schoolName=university+of+north+carolina+at+greensboro&queryoption=HEADER&query=' + name + '&facetSearch=true';
+
+          var div = document.createElement('div');
+          div.show = true;
+          div.innerHTML = '<input class="showRating" type="button" value="Show Rating"/>';
+          div.profName = fullName;
+          div.className = 'rateButton';
+          div.url = url;
+          div.addEventListener("click", getRating);
+          courses[i].children[19].appendChild(div);
+      }
+  }
 }

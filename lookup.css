@@ -1,0 +1,20 @@
+body {
+  background-color: FAFAFA;
+}
+
+table {
+  border-collapse: collapse;
+  background-color: white;
+}
+
+td {
+  border: 1px solid darkgray;
+  padding: 5px;
+}
+
+th {
+  padding: 5px;
+  font-family: sans-serif;
+}
+
+
